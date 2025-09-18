@@ -305,6 +305,7 @@ void ResponseCurveComponent::paint(juce::Graphics& g)
 
 void ResponseCurveComponent::resized()
 {
+    // Used to prerender backgound image
     using namespace juce;
     background = Image(Image::PixelFormat::RGB, getWidth(), getHeight(), true);
 
@@ -313,7 +314,7 @@ void ResponseCurveComponent::resized()
     // Frequency lines
     Array<float> freqs
     {
-        20, 30, 40, 50, 100, 200,300, 400,500,1000,2000,3000,4000,5000,10000,20000
+        20, 50, 100, 200,500,1000,2000,5000,10000,20000
     };
     
     auto renderArea = getAnalysisArea();
@@ -335,8 +336,6 @@ void ResponseCurveComponent::resized()
 
     for (auto x : xs)
     {
-        //auto normX = mapFromLog10(f, 20.f, 200000.f);
-        //g.drawVerticalLine(getWidth() * normX, 0.f, getHeight());
         g.drawVerticalLine(x, top, bottom);
     }
 
@@ -348,13 +347,46 @@ void ResponseCurveComponent::resized()
 
     for (auto gDb : gain)
     {
-        auto y = jmap(gDb, -24.f, 24.f, float(getHeight()), 0.f);
-        //g.drawHorizontalLine(y, 0, getWidth());
+        auto y = jmap(gDb, -24.f, 24.f, float(getHeight()), 0.f);       
         g.setColour(gDb == 0.f ? Colour(0u, 172u, 1u) : Colours::darkgrey);
         g.drawHorizontalLine(y, left, right);
     }
+    
+    // Adding labels
+    g.setColour(Colours::lightgrey);
+    const int fontHeight = 10;
+    g.setFont(fontHeight);
 
-    //g.drawRect(getAnalysisArea());
+    for (int i = 0; i < freqs.size(); ++i)
+    {
+        auto f = freqs[i];
+        auto x = xs[i];
+
+        bool addK = false;
+        String str;
+        if (f > 999.f)
+        {
+            addK = true;
+            f /= 1000.f;
+        }
+
+        str << f;
+        if (addK)
+        {
+            str << "k";
+        }
+        str << "Hz";
+
+        auto textWidth = g.getCurrentFont().getStringWidth(str);
+
+        Rectangle<int> r;
+        r.setSize(textWidth, fontHeight);
+        r.setCentre(x, 0);
+        r.setY(1);
+
+        g.drawFittedText(str, r, juce::Justification::centred,1);
+    }
+
 }
 
 juce::Rectangle<int> ResponseCurveComponent::getRenderArea()
