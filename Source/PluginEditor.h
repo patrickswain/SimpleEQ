@@ -21,6 +21,8 @@ struct LookAndFeel : juce::LookAndFeel_V4
         juce::Slider&) override;
 };
 
+//==============================================================================
+
 struct RotarySliderWithLabels : juce::Slider
 {
     RotarySliderWithLabels(juce::RangedAudioParameter& rap, const juce::String& unitSuffix) : 
@@ -39,7 +41,7 @@ struct RotarySliderWithLabels : juce::Slider
     void paint(juce::Graphics& g) override;
     juce::Rectangle<int> getSliderBounds() const;
     int getTextHeight() const { return 14; }
-    juce::String getDisplayString();
+    juce::String getDisplayString() const;
 
 private:
     LookAndFeel lnf;
