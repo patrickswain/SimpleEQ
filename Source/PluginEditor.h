@@ -293,6 +293,8 @@ private:
 
     ResponseCurveComponent responseCurveComponent;
 
+    juce::ToggleButton highCutBypassButton, peakBypassButton, lowCutBypassButton, analyzerEnabledButton;
+
     std::vector<juce::Component*> getComps();
 
     using APVTS = juce::AudioProcessorValueTreeState;
@@ -305,6 +307,12 @@ private:
         highCutFreqSliderAttachment,
         lowCutSlopeSliderAttachment,
         highCutSlopeSliderAttachment;
+
+    using ButtonAttachment = APVTS::ButtonAttachment;
+    ButtonAttachment highCutBypassButtonAttachment, 
+                     peakBypassButtonAttachment,
+                     lowCutBypassButtonAttachment,
+                     analyzerEnabledButtonAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SimpleEQAudioProcessorEditor)
 };
