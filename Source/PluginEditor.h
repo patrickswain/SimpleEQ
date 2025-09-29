@@ -267,6 +267,9 @@ private:
 
     PathProducer leftPathProducer, rightPathProducer;
 };
+//==============================================================================
+struct PowerButton : juce::ToggleButton {};
+struct AnalyzerButton : juce::ToggleButton {};
 
 //==============================================================================
 /**
@@ -298,7 +301,8 @@ private:
 
     ResponseCurveComponent responseCurveComponent;
 
-    juce::ToggleButton highCutBypassButton, peakBypassButton, lowCutBypassButton, analyzerEnabledButton;
+    PowerButton highCutBypassButton, peakBypassButton, lowCutBypassButton;
+    AnalyzerButton analyzerEnabledButton;
 
     std::vector<juce::Component*> getComps();
 
