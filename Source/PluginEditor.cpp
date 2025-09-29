@@ -64,6 +64,43 @@ void LookAndFeel::drawRotarySlider(juce::Graphics& g,
     }
     
 }
+
+void LookAndFeel::drawToggleButton(juce::Graphics& g,
+    juce::ToggleButton& toggleButton,
+    bool 	shouldDrawButtonAsHighlighted,
+    bool 	shouldDrawButtonAsDown)
+{
+    using namespace juce;
+
+    Path powerButton;
+
+    auto bounds = toggleButton.getLocalBounds();
+    auto size = jmin(bounds.getWidth(), bounds.getHeight()) - 6;
+    auto r = bounds.withSizeKeepingCentre(size, size).toFloat();
+
+    float ang = 30.f;
+    size -= 6;
+
+    powerButton.addCentredArc(r.getCentreX(),
+        r.getCentreY(),
+        size * 0.5,
+        size * 0.5,
+        0.f,
+        degreesToRadians(ang),
+        degreesToRadians(360 - ang),
+        true);
+
+    powerButton.startNewSubPath(r.getCentreX(), r.getY());
+    powerButton.lineTo(r.getCentre());
+
+    PathStrokeType pst(2.f, PathStrokeType::JointStyle::curved);
+    
+    auto color = toggleButton.getToggleState() ? Colours::dimgrey : Colour(0u, 172u, 1u);
+    g.setColour(color);
+    g.strokePath(powerButton, pst);
+
+    g.drawEllipse(r, 2); // outline
+}
 //==============================================================================
 void RotarySliderWithLabels::paint(juce::Graphics& g)
 {
@@ -568,6 +605,10 @@ SimpleEQAudioProcessorEditor::SimpleEQAudioProcessorEditor (SimpleEQAudioProcess
         addAndMakeVisible(comp);
     }
 
+    peakBypassButton.setLookAndFeel(&lnf);
+    highCutBypassButton.setLookAndFeel(&lnf);
+    lowCutBypassButton.setLookAndFeel(&lnf);
+
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (600, 400);
@@ -575,7 +616,9 @@ SimpleEQAudioProcessorEditor::SimpleEQAudioProcessorEditor (SimpleEQAudioProcess
 
 SimpleEQAudioProcessorEditor::~SimpleEQAudioProcessorEditor()
 {
-    
+    peakBypassButton.setLookAndFeel(nullptr);
+    highCutBypassButton.setLookAndFeel(nullptr);
+    lowCutBypassButton.setLookAndFeel(nullptr);
 }
 
 //==============================================================================
